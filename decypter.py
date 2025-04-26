@@ -4,14 +4,6 @@ import soundfile as sf
 from scipy.fftpack import idct
 import time
 
-# Optional: Import PESQ if you want to calculate quality scores
-try:
-    from pesq import pesq
-    PESQ_AVAILABLE = True
-except ImportError:
-    PESQ_AVAILABLE = False
-    print("PESQ module not found. Quality measurement will be disabled.")
-
 def logistic_map(x, r, n=1):
     """
     Implements the logistic map chaotic function
@@ -137,31 +129,9 @@ def xor_mask(data, mask_key):
     float_result = xor_result.astype(np.float32) / 32767
     return float_result
 
-def calculate_pesq(original_file, processed_file):
-    """
-    Calculate PESQ score between original and processed audio
-    Higher score indicates better quality (scale: -0.5 to 4.5)
-    """
-    if not PESQ_AVAILABLE:
-        print("PESQ module not available. Cannot calculate quality score.")
-        return None
-        
-    try:
-        original_audio, sr = librosa.load(original_file, sr=16000)
-        processed_audio, _ = librosa.load(processed_file, sr=16000)
-        
-        # Ensure both audios have the same length
-        min_len = min(len(original_audio), len(processed_audio))
-        original_audio = original_audio[:min_len]
-        processed_audio = processed_audio[:min_len]
-        
-        pesq_score = pesq(sr, original_audio, processed_audio, 'wb')
-        return pesq_score
-    except Exception as e:
-        print(f"Error calculating PESQ: {e}")
-        return None
 
-def decrypt_audio(file_path, output_path, initial_condition, r1, r2, original_file=None):
+
+def decrypt_audio(file_path, output_path, initial_condition, r1, r2):
     """
     Decrypt audio using inverse operations of the encryption process
     """
@@ -195,23 +165,17 @@ def decrypt_audio(file_path, output_path, initial_condition, r1, r2, original_fi
     print(f"DECRYPTED AUDIO SAVED TO: {output_path}")
     print(f"Decryption completed in {end_time - start_time:.2f} seconds")
 
-    # Calculate PESQ score if original file is provided
-    if original_file and PESQ_AVAILABLE:
-        pesq_score = calculate_pesq(original_file, output_path)
-        if pesq_score:
-            print(f"PESQ score: {pesq_score}")
 
 def main():
     # Direct variable declarations instead of using argparse
     file_path = "output_encrypted_audio.wav"  # Input encrypted audio file path
     output_path = "output_decrypted_audio.wav"  # Output decrypted audio file path
-    original_file = "sample.wav"  # Original audio file for quality comparison
     initial_condition = 0.5  # Initial condition for chaotic map
-    r1 = 3.85312  # First bifurcation parameter
-    r2 = 3.84521  # Second bifurcation parameter
+    r1 = 3.85312 
+    r2 = 3.84521  
     
     # Execute decryption
-    decrypt_audio(file_path, output_path, initial_condition, r1, r2, original_file)
+    decrypt_audio(file_path, output_path, initial_condition, r1, r2)
 
 if __name__ == "__main__":
     main()

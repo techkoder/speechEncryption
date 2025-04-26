@@ -5,12 +5,7 @@ from scipy.fftpack import dct
 import time
 
 def logistic_map(x, r, n=1):
-    """
-    Implements the logistic map chaotic function
-    x: initial value (0-1)
-    r: parameter (typically 3.57-4.0 for chaotic behavior)
-    n: number of iterations
-    """
+
     if n > 1:
         sequence = []
         for _ in range(n):
@@ -77,7 +72,6 @@ def generate_mask_key(audio_len):
     for x, r in zip(x_values, r_values):
         logistic_maps.append(logistic_map(x, r, audio_len))
     
-    # Create binary arrays
     A = np.zeros((6, audio_len), dtype=np.int8)
     for i in range(6):
         A[i] = (logistic_maps[i] >= 0.5).astype(np.int8) if i < 3 else (logistic_maps[i] <= 0.5).astype(np.int8)
@@ -154,14 +148,12 @@ def encrypt_audio(file_path, output_path, initial_condition, r1, r2):
     print(f"Encryption completed in {end_time - start_time:.2f} seconds")
 
 def main():
-    # Direct variable declarations instead of using argparse
-    file_path = "sample.wav"  # Input audio file path
+    file_path = "Recording.wav"  
     output_path = "output_encrypted_audio.wav"  # Output encrypted file path
-    initial_condition = 0.5  # Initial condition for chaotic map
-    r1 = 3.85312  # First bifurcation parameter
-    r2 = 3.84521  # Second bifurcation parameter
+    initial_condition = 0.5  
+    r1 = 3.85312  
+    r2 = 3.84521  
     
-    # Execute encryption
     encrypt_audio(file_path, output_path, initial_condition, r1, r2)
 
 if __name__ == "__main__":
