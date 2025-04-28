@@ -167,7 +167,6 @@ def decrypt_audio(file_path, output_path, initial_condition, r1, r2):
 
 
 def main():
-    # Direct variable declarations instead of using argparse
     file_path = "output_encrypted_audio.wav"  # Input encrypted audio file path
     output_path = "output_decrypted_audio.wav"  # Output decrypted audio file path
     initial_condition = 0.5  # Initial condition for chaotic map
